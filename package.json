@@ -4,11 +4,10 @@
   "description": "",
   "main": "webpack.config.js",
   "scripts": {
-    "start": "nodemon --watch webpack.config.js --exec \"webpack-dev-server --env development\"",
-    "build": "webpack --env production",
+    "start": "cross-env NODE_ENV=development node ./server.js --env development",
+    "build": "webpack --config webpack/webpack.production.js --env production",
     "lint:js": "eslint . --cache",
-    "serve": "NODE_ENV=production node ./server.js",
-    "silly": "cross-env NODE_ENV=development node ./server.js"
+    "serve": "NODE_ENV=production node ./server.js"
   },
   "keywords": [],
   "author": "Jeffrey Fortune",
