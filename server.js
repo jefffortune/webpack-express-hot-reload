@@ -34,13 +34,13 @@ app.set('twig options', {
 });
 
 app.get('/', function(req, res){
-  res.render('index.html.twig', {
+  res.render('index.twig', {
     message: 'Hello World!!',
   });
 });
 
 app.get('/about', function(req, res){
-  res.render('about.html.twig',{
+  res.render('about.twig',{
     message: 'This is about',
   });
 });
