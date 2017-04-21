@@ -1,4 +1,4 @@
-const webpack = require('webpack'); 
+const webpack = require('webpack');
 const merge = require('webpack-merge');
 const common = require('./webpack.common');
 const css = require('./parts/css');
@@ -13,10 +13,10 @@ module.exports = merge([
     ],
   },
   js.lintJavaScript({
-    include: '../assets',
+    include: '/../assets',
     options: {
       emitWarning: true,
-    }, 
+    },
   }),
   css.loadCSS(),
   util.generateSourceMaps({ type: 'cheap-module-eval-source-map' }),

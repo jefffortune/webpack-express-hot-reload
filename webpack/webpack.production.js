@@ -1,5 +1,5 @@
 const path = require('path');
-const webpack = require('webpack'); 
+const webpack = require('webpack');
 const merge = require('webpack-merge');
 const common = require('./webpack.common');
 const css = require('./parts/css');
@@ -25,7 +25,7 @@ const PUBLIC = {
 };
 
 module.exports = merge([
-  
+
   common,
   {
     entry: {
@@ -37,9 +37,9 @@ module.exports = merge([
       filename: 'public/js/[name].js',
       publicPath: PUBLIC.root,
     },
-    
+
   },
-  
+
   util.clean('public'),
   //util.minifyJavaScript({useSourceMap: true}),
   util.minifyCSS({
@@ -57,4 +57,4 @@ module.exports = merge([
     'sass-loader?sourceMap',
     css.autoprefix(),
   ]}),
-]);   
+]);

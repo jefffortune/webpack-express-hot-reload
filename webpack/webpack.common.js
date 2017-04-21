@@ -32,14 +32,14 @@ module.exports = merge([
       }),
     ],
   },
-  css.lintCSS({include: '../assets/'}),
+  css.lintCSS({include: '/../assets/'}),
   img.loadImages({
     options: {
       limit: 15000,
       name: '/images/[name].[ext]',
     },
   }),
-  js.loadJavaScript({include: '../assets'}),
+  js.loadJavaScript({include: '/../assets'}),
 ]);
 
 
