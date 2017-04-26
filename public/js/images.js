@@ -59,9 +59,9 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "41abce5178166e341fe7"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "5f44b47ea67f3afa8b37"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
-/******/ 	var hotMainModule = true; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParentsTemp = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -73,14 +73,16 @@
 /******/ 				if(installedModules[request]) {
 /******/ 					if(installedModules[request].parents.indexOf(moduleId) < 0)
 /******/ 						installedModules[request].parents.push(moduleId);
-/******/ 				} else hotCurrentParents = [moduleId];
+/******/ 				} else {
+/******/ 					hotCurrentParents = [moduleId];
+/******/ 					hotCurrentChildModule = request;
+/******/ 				}
 /******/ 				if(me.children.indexOf(request) < 0)
 /******/ 					me.children.push(request);
 /******/ 			} else {
 /******/ 				console.warn("[HMR] unexpected require(" + request + ") from disposed module " + moduleId);
 /******/ 				hotCurrentParents = [];
 /******/ 			}
-/******/ 			hotMainModule = false;
 /******/ 			return __webpack_require__(request);
 /******/ 		};
 /******/ 		var ObjectFactory = function ObjectFactory(name) {
@@ -96,34 +98,31 @@
 /******/ 			};
 /******/ 		};
 /******/ 		for(var name in __webpack_require__) {
-/******/ 			if(Object.prototype.hasOwnProperty.call(__webpack_require__, name)) {
+/******/ 			if(Object.prototype.hasOwnProperty.call(__webpack_require__, name) && name !== "e") {
 /******/ 				Object.defineProperty(fn, name, ObjectFactory(name));
 /******/ 			}
 /******/ 		}
-/******/ 		Object.defineProperty(fn, "e", {
-/******/ 			enumerable: true,
-/******/ 			value: function(chunkId) {
-/******/ 				if(hotStatus === "ready")
-/******/ 					hotSetStatus("prepare");
-/******/ 				hotChunksLoading++;
-/******/ 				return __webpack_require__.e(chunkId).then(finishChunkLoading, function(err) {
-/******/ 					finishChunkLoading();
-/******/ 					throw err;
-/******/ 				});
+/******/ 		fn.e = function(chunkId) {
+/******/ 			if(hotStatus === "ready")
+/******/ 				hotSetStatus("prepare");
+/******/ 			hotChunksLoading++;
+/******/ 			return __webpack_require__.e(chunkId).then(finishChunkLoading, function(err) {
+/******/ 				finishChunkLoading();
+/******/ 				throw err;
+/******/ 			});
 /******/ 	
-/******/ 				function finishChunkLoading() {
-/******/ 					hotChunksLoading--;
-/******/ 					if(hotStatus === "prepare") {
-/******/ 						if(!hotWaitingFilesMap[chunkId]) {
-/******/ 							hotEnsureUpdateChunk(chunkId);
-/******/ 						}
-/******/ 						if(hotChunksLoading === 0 && hotWaitingFiles === 0) {
-/******/ 							hotUpdateDownloaded();
-/******/ 						}
+/******/ 			function finishChunkLoading() {
+/******/ 				hotChunksLoading--;
+/******/ 				if(hotStatus === "prepare") {
+/******/ 					if(!hotWaitingFilesMap[chunkId]) {
+/******/ 						hotEnsureUpdateChunk(chunkId);
+/******/ 					}
+/******/ 					if(hotChunksLoading === 0 && hotWaitingFiles === 0) {
+/******/ 						hotUpdateDownloaded();
 /******/ 					}
 /******/ 				}
 /******/ 			}
-/******/ 		});
+/******/ 		};
 /******/ 		return fn;
 /******/ 	}
 /******/ 	
@@ -135,7 +134,7 @@
 /******/ 			_selfAccepted: false,
 /******/ 			_selfDeclined: false,
 /******/ 			_disposeHandlers: [],
-/******/ 			_main: hotMainModule,
+/******/ 			_main: hotCurrentChildModule !== moduleId,
 /******/ 	
 /******/ 			// Module API
 /******/ 			active: true,
@@ -188,7 +187,7 @@
 /******/ 			//inherit from previous dispose call
 /******/ 			data: hotCurrentModuleData[moduleId]
 /******/ 		};
-/******/ 		hotMainModule = true;
+/******/ 		hotCurrentChildModule = undefined;
 /******/ 		return hot;
 /******/ 	}
 /******/ 	
@@ -226,7 +225,6 @@
 /******/ 				hotSetStatus("idle");
 /******/ 				return null;
 /******/ 			}
-/******/ 	
 /******/ 			hotRequestedFilesMap = {};
 /******/ 			hotWaitingFilesMap = {};
 /******/ 			hotAvailableFilesMap = update.c;
@@ -240,7 +238,7 @@
 /******/ 				};
 /******/ 			});
 /******/ 			hotUpdate = {};
-/******/ 			var chunkId = 0;
+/******/ 			var chunkId = 1;
 /******/ 			{ // eslint-disable-line no-lone-blocks
 /******/ 				/*globals chunkId */
 /******/ 				hotEnsureUpdateChunk(chunkId);
@@ -643,9 +641,9 @@
 /******/ 	function __webpack_require__(moduleId) {
 /******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-/******/
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
@@ -700,61 +698,63 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/Users/jfortune/Sites/webpack-express/public";
+/******/ 	__webpack_require__.p = "/Users/jfortune/encore/picturemapper/public";
 /******/
 /******/ 	// __webpack_hash__
 /******/ 	__webpack_require__.h = function() { return hotCurrentHash; };
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return hotCreateRequire(10)(__webpack_require__.s = 10);
+/******/ 	return hotCreateRequire(354)(__webpack_require__.s = 354);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */,
-/* 1 */,
-/* 2 */
+/******/ ({
+
+/***/ 139:
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "/public/images/close.svg";
 
 /***/ }),
-/* 3 */
+
+/***/ 140:
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "/public/images/ham.svg";
 
 /***/ }),
-/* 4 */
+
+/***/ 141:
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "/public/images/imagetop.png";
 
 /***/ }),
-/* 5 */
+
+/***/ 142:
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "/public/images/overlay.svg";
 
 /***/ }),
-/* 6 */
+
+/***/ 143:
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "/public/images/pipeyard.jpg";
 
 /***/ }),
-/* 7 */,
-/* 8 */,
-/* 9 */,
-/* 10 */
+
+/***/ 354:
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(2);
-__webpack_require__(3);
-__webpack_require__(4);
-__webpack_require__(5);
-module.exports = __webpack_require__(6);
+__webpack_require__(139);
+__webpack_require__(140);
+__webpack_require__(141);
+__webpack_require__(142);
+module.exports = __webpack_require__(143);
 
 
 /***/ })
-/******/ ]);
+
+/******/ });
 //# sourceMappingURL=images.js.map

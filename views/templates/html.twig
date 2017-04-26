@@ -8,23 +8,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="">
   <title>{% block title %}{% endblock %}</title>
-  <link href="css/styles.css" rel="stylesheet"></head>
+  <link href="public/css/styles.css" rel="stylesheet">
+  <link href="foundation/css/foundation.css" rel="stylesheet">
+{#<link href="/assets/css/styles.css" rel="stylesheet">#}
+
   <!--[if lt IE 9]>
-    <link rel="stylesheet" href="assets/css/styles-ie.css">
+    <!--<link rel="stylesheet" href="public/css/styles-ie.css">-->
   <![endif]-->
   <!--[if gt IE 8]><!-->
   <!--<![endif]-->
-<link href="/assets/css/styles.css" rel="stylesheet">
+
   {% endblock %}
 </head>
 <body>
- 
+
   {% block content %}
   <section id="main" class="main-content">
-    
+
   </section>
   {% endblock %}
- 
+
   {% block scripts %} {% endblock %}
 {#<script src="https://use.typekit.net/ntj2dwr.js"></script>
 <script>try{Typekit.load({ async: true });}catch(e){}</script>#}
@@ -40,7 +43,7 @@
   ga('create','UA-XXXXX-X','auto');ga('send','pageview');
 </script>#}
 <script src="js/scripts.js"></script>
-  
+
 </body>
 </html>
 

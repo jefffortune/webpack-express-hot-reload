@@ -1,58 +1,51 @@
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: yellowgreen;
 }
 
 h1 {
   color: black;
   background: orange;
   font-size: 80px;
-  background-image: url('/images/overlay.svg');
   background-size: cover;
 }
 ::selection {
-
+  background-color: $color_black;
   color: $color_white;
 }
 
-button {
+button, .button {
   cursor: pointer;
+  background-color: $color_encore_blue;
+
+  &:hover, &:focus {
+    background-color: $color_blue;
+  }
 }
 
-#content {
-  .wrapper {
+button.btn-setting {
+  margin-right: em(10);
 
-    & > *:first-child {
-      margin-top: 0;
-    }
-
-    & > *:last-child {
-      margin-bottom: 0;
-    }
-
+  &:first-of-type {
+    margin-left: em(10);
   }
+}
 
-  /* Lists */
+.button {
+  border-radius: 4px;
+}
 
-  ul, ol {
+caption {
+  border: 3px solid $color_encore_blue;
+  color: $color_encore_blue;
+  margin-bottom: em(13);
+  border-radius: 4px;
+}
 
+//table {
+//  max-width: 350px;
+//}
 
-    li {
-
-    }
-  }
-
-  ul li:before {
-
-  }
-
-  ol {
-
-
-    li:before {
-
-    }
-  }
-
+.main {
+  padding: em(30);
 }
